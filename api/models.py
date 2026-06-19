@@ -35,3 +35,16 @@ class Loan(models.Model):
 
     def __str__(self):
         return f"Loan {self.id}: {self.user.email} - Kshs. {self.principal_amount}"
+    
+class Repayment(models.Model):
+    loan = models.ForeignKey(
+        Loan, 
+        on_delete=models.CASCADE,
+        related_name='repayments'
+    )
+    amount_paid = models.DecimalField(max_digits=12, decimal_places=2)
+    payment_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Repayment {self.id}: Loan {self.loan.id} - Kshs. {self.amount_paid}"
