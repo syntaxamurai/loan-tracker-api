@@ -58,7 +58,17 @@ class LoanSchedule(models.Model):
     due_date = models.DateField()
     expected_amount = models.DecimalField(max_digits=12, decimal_places=2)
     paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    is_paid = models.BooleanField(default=False)
+    
+    @property
+    def percentage_paid(self):
+        if self.expected_amount > 0:
+            return round((self.paid_amount / self.expected_amount) * 100, 2)
+        return 0
+    
+    @property
+    def is_fully_paid(self):
+        return self.paid_amount >= self.expected_amount
 
     def __str__(self):
-        return f"Schedule: Loan {self.loan.id} - Due {self.due_date} - {'Paid' if self.is_paid else 'Unpaid'}"
+        status = 'Paid' if self.is_fully_paid else f'{self.percentage_paid}% paid'
+        return f"Schedule: Loan {self.loan.id} - Due {self.due_date} - {status}"
