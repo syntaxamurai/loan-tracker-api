@@ -48,3 +48,17 @@ class Repayment(models.Model):
 
     def __str__(self):
         return f"Repayment {self.id}: Loan {self.loan.id} - Kshs. {self.amount_paid}"
+    
+class LoanSchedule(models.Model):
+    loan = models.ForeignKey(
+        Loan, 
+        on_delete=models.CASCADE,
+        related_name='schedule'
+    )
+    due_date = models.DateField()
+    expected_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    is_paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Schedule: Loan {self.loan.id} - Due {self.due_date} - {'Paid' if self.is_paid else 'Unpaid'}"
